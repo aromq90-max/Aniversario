@@ -1,0 +1,2394 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    >
+
+    <title>Volvería a elegirte ❤️</title>
+
+    <meta
+        name="description"
+        content="Nuestra historia. Cinco meses, una historia y un amor que volvería a elegir."
+    >
+
+    <!-- FUENTES -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Dancing+Script:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        /* =========================================================
+           VARIABLES
+        ========================================================= */
+
+        :root {
+            --wine: #5d1830;
+            --wine-dark: #210713;
+            --rose: #c96b83;
+            --pink: #f2a9ba;
+            --cream: #fff8f3;
+            --paper: #fffaf6;
+            --ink: #39242a;
+            --gold: #d8aa72;
+        }
+
+        /* =========================================================
+           RESET
+        ========================================================= */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            overflow-x: hidden;
+            background: var(--wine-dark);
+            color: var(--ink);
+            font-family: "Montserrat", sans-serif;
+        }
+
+        button {
+            font-family: inherit;
+        }
+
+        /* =========================================================
+           MÚSICA
+        ========================================================= */
+
+        #loveMusic {
+            display: none;
+        }
+
+        /* =========================================================
+           PANTALLA DEL CORAZÓN
+        ========================================================= */
+
+        #heartScreen {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+
+            width: 100%;
+            height: 100dvh;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+
+            overflow: hidden;
+
+            background:
+                radial-gradient(
+                    circle at center,
+                    rgba(126, 27, 55, 0.35),
+                    transparent 45%
+                ),
+                linear-gradient(
+                    145deg,
+                    #110309 0%,
+                    #280814 45%,
+                    #120309 100%
+                );
+
+            transition:
+                opacity 1.2s ease,
+                visibility 1.2s ease;
+        }
+
+        #heartScreen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .heart-intro {
+            position: relative;
+            z-index: 5;
+
+            width: 100%;
+            text-align: center;
+
+            padding: 20px;
+        }
+
+        .intro-small {
+            color: rgba(255,255,255,0.62);
+            font-size: 11px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+
+            margin-bottom: 25px;
+        }
+
+        .heart-wrapper {
+            width: min(250px, 68vw);
+            height: min(230px, 62vw);
+
+            position: relative;
+
+            margin: 0 auto;
+
+            cursor: pointer;
+
+            touch-action: manipulation;
+
+            filter:
+                drop-shadow(0 0 12px rgba(239, 91, 126, .25))
+                drop-shadow(0 0 45px rgba(205, 53, 92, .15));
+        }
+
+        .heart-wrapper.beat {
+            animation: heartbeat 0.55s ease;
+        }
+
+        .heart-svg {
+            width: 100%;
+            height: 100%;
+
+            overflow: visible;
+        }
+
+        .heart-outline {
+            fill: rgba(255,255,255,0.015);
+            stroke: rgba(255, 174, 194, .85);
+            stroke-width: 2.5;
+        }
+
+        .heart-fill {
+            fill: url(#heartGradient);
+
+            clip-path: inset(
+                100% 0 0 0
+            );
+
+            transition:
+                clip-path .75s cubic-bezier(.4,0,.2,1);
+        }
+
+        .heart-wrapper[data-progress="1"] .heart-fill {
+            clip-path: inset(75% 0 0 0);
+        }
+
+        .heart-wrapper[data-progress="2"] .heart-fill {
+            clip-path: inset(50% 0 0 0);
+        }
+
+        .heart-wrapper[data-progress="3"] .heart-fill {
+            clip-path: inset(25% 0 0 0);
+        }
+
+        .heart-wrapper[data-progress="4"] .heart-fill {
+            clip-path: inset(0 0 0 0);
+        }
+
+        .heart-glow {
+            position: absolute;
+            inset: 25%;
+
+            border-radius: 50%;
+
+            background: rgba(255, 79, 121, .18);
+
+            filter: blur(35px);
+
+            opacity: 0;
+
+            transition: opacity .5s ease;
+        }
+
+        .heart-wrapper[data-progress="1"] .heart-glow,
+        .heart-wrapper[data-progress="2"] .heart-glow,
+        .heart-wrapper[data-progress="3"] .heart-glow,
+        .heart-wrapper[data-progress="4"] .heart-glow {
+            opacity: 1;
+        }
+
+        .heart-text {
+            position: absolute;
+
+            left: 50%;
+            top: 54%;
+
+            transform: translate(-50%, -50%);
+
+            color: white;
+
+            font-family: "Dancing Script", cursive;
+
+            font-size: clamp(22px, 7vw, 32px);
+
+            text-shadow:
+                0 2px 15px rgba(0,0,0,.35);
+
+            pointer-events: none;
+
+            width: 90%;
+        }
+
+        .heart-instruction {
+            margin-top: 25px;
+
+            color: rgba(255,255,255,.82);
+
+            font-family: "Caveat", cursive;
+
+            font-size: 24px;
+        }
+
+        .heart-counter {
+            margin-top: 12px;
+
+            color: rgba(255,255,255,.4);
+
+            font-size: 10px;
+
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* =========================================================
+           PUNTOS
+        ========================================================= */
+
+        .progress-dots {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+
+            margin-top: 25px;
+        }
+
+        .progress-dot {
+            width: 7px;
+            height: 7px;
+
+            border-radius: 50%;
+
+            background: rgba(255,255,255,.2);
+
+            transition:
+                transform .4s ease,
+                background .4s ease,
+                box-shadow .4s ease;
+        }
+
+        .progress-dot.active {
+            background: #f49ab0;
+
+            transform: scale(1.35);
+
+            box-shadow:
+                0 0 12px rgba(244,154,176,.7);
+        }
+
+        /* =========================================================
+           CORAZONES FLOTANTES
+        ========================================================= */
+
+        .floating-heart {
+            position: absolute;
+
+            color: rgba(255, 154, 178, .35);
+
+            pointer-events: none;
+
+            animation:
+                floatHeart linear forwards;
+
+            z-index: 1;
+        }
+
+        @keyframes floatHeart {
+            from {
+                transform:
+                    translateY(30px)
+                    rotate(0deg)
+                    scale(.7);
+
+                opacity: 0;
+            }
+
+            15% {
+                opacity: 1;
+            }
+
+            to {
+                transform:
+                    translateY(-110vh)
+                    rotate(35deg)
+                    scale(1.3);
+
+                opacity: 0;
+            }
+        }
+
+        @keyframes heartbeat {
+            0% {
+                transform: scale(1);
+            }
+
+            25% {
+                transform: scale(1.08);
+            }
+
+            45% {
+                transform: scale(.97);
+            }
+
+            70% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* =========================================================
+           TRANSICIÓN
+        ========================================================= */
+
+        #transitionFlash {
+            position: fixed;
+            inset: 0;
+
+            background: #fff5f7;
+
+            z-index: 10000;
+
+            pointer-events: none;
+
+            opacity: 0;
+
+            transition: opacity .8s ease;
+        }
+
+        #transitionFlash.active {
+            opacity: 1;
+        }
+
+        /* =========================================================
+           DIARIO
+        ========================================================= */
+
+        #diary {
+            min-height: 100vh;
+
+            background:
+                radial-gradient(
+                    circle at top,
+                    rgba(218, 171, 146, .12),
+                    transparent 30%
+                ),
+                linear-gradient(
+                    180deg,
+                    #fff9f5,
+                    #fffdfb 50%,
+                    #fff8f4
+                );
+
+            opacity: 0;
+
+            transform: translateY(20px);
+
+            transition:
+                opacity 1.3s ease,
+                transform 1.3s ease;
+        }
+
+        #diary.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* =========================================================
+           PORTADA
+        ========================================================= */
+
+        .cover {
+            min-height: 100dvh;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            text-align: center;
+
+            padding:
+                80px 25px
+                70px;
+
+            position: relative;
+
+            overflow: hidden;
+        }
+
+        .cover::before {
+            content: "";
+
+            position: absolute;
+
+            width: 260px;
+            height: 260px;
+
+            border-radius: 50%;
+
+            background: rgba(211, 130, 151, .09);
+
+            filter: blur(5px);
+
+            top: -90px;
+            right: -90px;
+        }
+
+        .cover-content {
+            max-width: 650px;
+
+            position: relative;
+            z-index: 2;
+        }
+
+        .cover-small {
+            font-size: 10px;
+
+            letter-spacing: 5px;
+
+            color: #a6787d;
+
+            text-transform: uppercase;
+
+            margin-bottom: 22px;
+        }
+
+        .cover h1 {
+            font-family: "Dancing Script", cursive;
+
+            font-size: clamp(48px, 14vw, 85px);
+
+            line-height: .95;
+
+            font-weight: 600;
+
+            color: var(--wine);
+
+            margin-bottom: 22px;
+        }
+
+        .cover-subtitle {
+            font-family: "Caveat", cursive;
+
+            font-size: clamp(25px, 7vw, 34px);
+
+            color: #9d596b;
+
+            line-height: 1.2;
+        }
+
+        .cover-date {
+            margin-top: 30px;
+
+            font-size: 10px;
+
+            letter-spacing: 4px;
+
+            color: #a7908e;
+
+            text-transform: uppercase;
+        }
+
+        .cover-heart {
+            margin-top: 40px;
+
+            font-size: 25px;
+
+            color: #bb526f;
+
+            animation: tinyBeat 1.8s infinite;
+        }
+
+        @keyframes tinyBeat {
+            0%, 100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.15);
+            }
+        }
+
+        /* =========================================================
+           CONTENEDOR
+        ========================================================= */
+
+        .book {
+            width: min(100%, 850px);
+
+            margin: auto;
+
+            padding:
+                20px 18px
+                80px;
+        }
+
+        /* =========================================================
+           CAPÍTULOS
+        ========================================================= */
+
+        .chapter {
+            position: relative;
+
+            padding:
+                75px 0
+                90px;
+
+            border-top: 1px solid rgba(105, 54, 61, .08);
+        }
+
+        .chapter:first-child {
+            border-top: none;
+        }
+
+        .chapter-number {
+            font-family: "Caveat", cursive;
+
+            font-size: 18px;
+
+            color: #b27a80;
+
+            margin-bottom: 5px;
+        }
+
+        .chapter h2 {
+            font-family: "Dancing Script", cursive;
+
+            font-size: clamp(34px, 9vw, 53px);
+
+            line-height: 1.05;
+
+            color: var(--wine);
+
+            font-weight: 600;
+
+            margin-bottom: 25px;
+        }
+
+        .chapter p {
+            font-size: 15px;
+
+            line-height: 2;
+
+            color: #554044;
+
+            font-weight: 300;
+
+            margin-bottom: 20px;
+        }
+
+        .chapter p strong {
+            color: var(--wine);
+            font-weight: 600;
+        }
+
+        /* =========================================================
+           FRASES FLOTANTES
+        ========================================================= */
+
+        .side-note {
+            position: absolute;
+
+            font-family: "Caveat", cursive;
+
+            color: #b46c7c;
+
+            font-size: 22px;
+
+            line-height: 1.05;
+
+            width: 150px;
+
+            opacity: 0;
+
+            transform:
+                translateY(20px)
+                rotate(-7deg);
+
+            transition:
+                opacity 1s ease,
+                transform 1s ease;
+
+            pointer-events: none;
+        }
+
+        .side-note.show {
+            opacity: .75;
+
+            transform:
+                translateY(0)
+                rotate(-7deg);
+        }
+
+        .side-note.left {
+            left: -135px;
+        }
+
+        .side-note.right {
+            right: -135px;
+
+            transform:
+                translateY(20px)
+                rotate(7deg);
+        }
+
+        .side-note.right.show {
+            transform:
+                translateY(0)
+                rotate(7deg);
+        }
+
+        /* =========================================================
+           POLAROIDS
+        ========================================================= */
+
+        .photo {
+            width: min(90%, 370px);
+
+            margin:
+                45px auto
+                60px;
+
+            background: white;
+
+            padding:
+                10px
+                10px
+                45px;
+
+            box-shadow:
+                0 15px 45px rgba(69, 36, 42, .14);
+
+            transform: rotate(-2deg);
+
+            position: relative;
+        }
+
+        .photo:nth-of-type(even) {
+            transform: rotate(2.5deg);
+        }
+
+        .photo img {
+            display: block;
+
+            width: 100%;
+
+            aspect-ratio: 4 / 5;
+
+            object-fit: cover;
+        }
+
+        .photo-caption {
+            position: absolute;
+
+            bottom: 10px;
+            left: 0;
+            right: 0;
+
+            text-align: center;
+
+            font-family: "Caveat", cursive;
+
+            font-size: 21px;
+
+            color: #67464d;
+        }
+
+        /* =========================================================
+           FRASES CENTRALES
+        ========================================================= */
+
+        .quote {
+            margin:
+                50px auto
+                60px;
+
+            max-width: 650px;
+
+            text-align: center;
+
+            padding:
+                30px 20px;
+
+            position: relative;
+        }
+
+        .quote::before {
+            content: "“";
+
+            position: absolute;
+
+            top: -25px;
+            left: 50%;
+
+            transform: translateX(-50%);
+
+            font-family: Georgia, serif;
+
+            font-size: 80px;
+
+            color: rgba(184, 85, 111, .14);
+        }
+
+        .quote p {
+            font-family: "Dancing Script", cursive;
+
+            font-size: clamp(29px, 8vw, 42px);
+
+            line-height: 1.15;
+
+            color: #813d51;
+        }
+
+        /* =========================================================
+           CARTA
+        ========================================================= */
+
+        .letter {
+            margin-top: 50px;
+
+            padding:
+                35px 22px
+                45px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #fffdfb,
+                    #fff6f1
+                );
+
+            border:
+                1px solid rgba(124, 70, 74, .08);
+
+            box-shadow:
+                0 20px 60px rgba(62, 31, 36, .08);
+
+            position: relative;
+        }
+
+        .letter::before {
+            content: "♡";
+
+            position: absolute;
+
+            top: 12px;
+            right: 18px;
+
+            color: #c17a88;
+
+            font-size: 28px;
+        }
+
+        .letter-title {
+            font-family: "Dancing Script", cursive;
+
+            color: var(--wine);
+
+            font-size: 39px;
+
+            margin-bottom: 25px;
+        }
+
+        .letter p {
+            font-family: "Caveat", cursive;
+
+            font-size: 23px;
+
+            line-height: 1.55;
+
+            color: #50373d;
+
+            margin-bottom: 20px;
+        }
+
+        .signature {
+            margin-top: 35px;
+
+            text-align: right;
+
+            font-family: "Dancing Script", cursive;
+
+            font-size: 32px;
+
+            color: #8d4658;
+        }
+
+        /* =========================================================
+           FINAL
+        ========================================================= */
+
+        .final {
+            min-height: 80vh;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            text-align: center;
+
+            padding:
+                80px 15px;
+
+            position: relative;
+        }
+
+        .final-content {
+            max-width: 600px;
+        }
+
+        .final-heart {
+            font-size: 55px;
+
+            color: #b94f6b;
+
+            animation: tinyBeat 1.7s infinite;
+
+            margin-bottom: 25px;
+        }
+
+        .final h2 {
+            font-family: "Dancing Script", cursive;
+
+            font-size: clamp(47px, 13vw, 75px);
+
+            line-height: .95;
+
+            color: var(--wine);
+
+            margin-bottom: 25px;
+        }
+
+        .final p {
+            font-family: "Caveat", cursive;
+
+            font-size: 27px;
+
+            line-height: 1.4;
+
+            color: #745158;
+        }
+
+        .forever {
+            margin-top: 45px;
+
+            font-family: "Dancing Script", cursive;
+
+            font-size: 32px;
+
+            color: #9a4d61;
+        }
+
+        /* =========================================================
+           REVEAL
+        ========================================================= */
+
+        .reveal {
+            opacity: 0;
+
+            transform: translateY(35px);
+
+            transition:
+                opacity 1s ease,
+                transform 1s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+
+            transform: translateY(0);
+        }
+
+        /* =========================================================
+           CORAZONES DURANTE SCROLL
+        ========================================================= */
+
+        .scroll-heart {
+            position: fixed;
+
+            pointer-events: none;
+
+            z-index: 50;
+
+            font-size: 13px;
+
+            color: rgba(166, 67, 92, .4);
+
+            animation:
+                scrollHeartAnimation 1.5s ease forwards;
+        }
+
+        @keyframes scrollHeartAnimation {
+            0% {
+                opacity: 0;
+
+                transform:
+                    translateY(10px)
+                    scale(.5);
+            }
+
+            25% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+
+                transform:
+                    translateY(-80px)
+                    scale(1.3);
+            }
+        }
+
+        /* =========================================================
+           CONTROL DE MÚSICA
+        ========================================================= */
+
+        #musicControl {
+            position: fixed;
+
+            right: 15px;
+            bottom: 15px;
+
+            width: 42px;
+            height: 42px;
+
+            border-radius: 50%;
+
+            border: 1px solid rgba(116, 56, 69, .15);
+
+            background: rgba(255, 250, 247, .88);
+
+            backdrop-filter: blur(8px);
+
+            color: #8c4659;
+
+            font-size: 17px;
+
+            display: none;
+
+            align-items: center;
+            justify-content: center;
+
+            z-index: 500;
+
+            box-shadow:
+                0 6px 20px rgba(60, 25, 35, .1);
+
+            cursor: pointer;
+        }
+
+        #musicControl.visible {
+            display: flex;
+        }
+
+        /* =========================================================
+           DESKTOP
+        ========================================================= */
+
+        @media (min-width: 800px) {
+
+            .book {
+                padding-left: 50px;
+                padding-right: 50px;
+            }
+
+            .chapter p {
+                font-size: 16px;
+            }
+
+            .photo {
+                width: 400px;
+            }
+        }
+
+        /* =========================================================
+           CELULAR PEQUEÑO
+        ========================================================= */
+
+        @media (max-width: 380px) {
+
+            .heart-wrapper {
+                width: 215px;
+                height: 200px;
+            }
+
+            .heart-instruction {
+                font-size: 21px;
+            }
+
+            .chapter {
+                padding-top: 60px;
+                padding-bottom: 70px;
+            }
+
+            .chapter p {
+                font-size: 14px;
+                line-height: 1.9;
+            }
+
+            .letter p {
+                font-size: 21px;
+            }
+
+            .side-note {
+                display: none;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================================================
+         MÚSICA
+    ========================================================== -->
+
+    <audio id="loveMusic" loop preload="auto">
+        <source
+            src="./Volver%C3%ADa%20a%20elegirte.mp3"
+            type="audio/mpeg"
+        >
+    </audio>
+
+
+    <!-- =========================================================
+         PANTALLA DEL CORAZÓN
+    ========================================================== -->
+
+    <section id="heartScreen">
+
+        <div class="heart-intro">
+
+            <div class="intro-small">
+                Una historia de dos
+            </div>
+
+            <div
+                class="heart-wrapper"
+                id="heartButton"
+                data-progress="0"
+                role="button"
+                aria-label="Toca el corazón"
+            >
+
+                <div class="heart-glow"></div>
+
+                <svg
+                    class="heart-svg"
+                    viewBox="0 0 200 180"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+
+                    <defs>
+
+                        <linearGradient
+                            id="heartGradient"
+                            x1="0%"
+                            y1="100%"
+                            x2="0%"
+                            y2="0%"
+                        >
+                            <stop
+                                offset="0%"
+                                stop-color="#8c1d3b"
+                            />
+
+                            <stop
+                                offset="50%"
+                                stop-color="#d95075"
+                            />
+
+                            <stop
+                                offset="100%"
+                                stop-color="#f29aae"
+                            />
+                        </linearGradient>
+
+                    </defs>
+
+                    <!-- Corazón vacío -->
+
+                    <path
+                        class="heart-outline"
+                        d="
+                            M100 170
+                            C90 160 20 118 20 62
+                            C20 25 64 8 100 43
+                            C136 8 180 25 180 62
+                            C180 118 110 160 100 170 Z
+                        "
+                    />
+
+                    <!-- Corazón que se llena -->
+
+                    <path
+                        class="heart-fill"
+                        d="
+                            M100 170
+                            C90 160 20 118 20 62
+                            C20 25 64 8 100 43
+                            C136 8 180 25 180 62
+                            C180 118 110 160 100 170 Z
+                        "
+                    />
+
+                </svg>
+
+                <div
+                    class="heart-text"
+                    id="heartText"
+                >
+                    Tócame
+                </div>
+
+            </div>
+
+            <div
+                class="heart-instruction"
+                id="heartInstruction"
+            >
+                Completa nuestro corazón
+            </div>
+
+            <div class="heart-counter">
+                <span id="heartCounter">0</span> / 4
+            </div>
+
+            <div class="progress-dots">
+
+                <span
+                    class="progress-dot"
+                    id="dot1"
+                ></span>
+
+                <span
+                    class="progress-dot"
+                    id="dot2"
+                ></span>
+
+                <span
+                    class="progress-dot"
+                    id="dot3"
+                ></span>
+
+                <span
+                    class="progress-dot"
+                    id="dot4"
+                ></span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- TRANSICIÓN -->
+
+    <div id="transitionFlash"></div>
+
+
+    <!-- =========================================================
+         DIARIO
+    ========================================================== -->
+
+    <main id="diary">
+
+        <!-- =====================================================
+             PORTADA
+        ====================================================== -->
+
+        <section class="cover">
+
+            <div class="cover-content reveal">
+
+                <div class="cover-small">
+                    Nuestra historia
+                </div>
+
+                <h1>
+                    El día que la vida cambió nuestro destino
+                </h1>
+
+                <div class="cover-subtitle">
+                    Celebrando nuestros 5 meses juntos
+                </div>
+
+                <div class="cover-date">
+                    Para Karina, mi niña, mi princesa
+                </div>
+
+                <div class="cover-heart">
+                    ♥
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <div class="book">
+
+
+            <!-- =================================================
+                 CAPÍTULO 1
+            ================================================== -->
+
+            <section class="chapter reveal">
+
+                <div
+                    class="side-note left"
+                    data-note
+                >
+                    Quizás nosotros no buscábamos el amor...
+                </div>
+
+                <div class="side-note right" data-note>
+                    Pero el amor ya nos estaba buscando.
+                </div>
+
+                <div class="chapter-number">
+                    Capítulo I
+                </div>
+
+                <h2>
+                    El encuentro inesperado
+                </h2>
+
+                <p>
+                    Todo comenzó en aquella discoteca, justo una
+                    semana antes de tomar la decisión más bonita
+                    de mi vida.
+                </p>
+
+                <p>
+                    Ninguno de los dos buscaba a nadie; ambos
+                    disfrutábamos de nuestra tranquilidad y
+                    soltería. Sin embargo, el destino tenía
+                    preparado algo superior.
+                </p>
+
+                <p>
+                    Bailamos muy poco, pero hablamos tanto que
+                    el mundo a nuestro alrededor pareció
+                    desaparecer.
+                </p>
+
+                <p>
+                    Conectamos de una forma mágica e inesperada.
+                    Hicimos ese match único que nos impulsó a
+                    querer descubrir el universo que cada uno
+                    llevaba dentro.
+                </p>
+
+                <div class="quote">
+
+                    <p>
+                        Quizás nosotros no estábamos buscando
+                        el amor, pero el amor ya nos estaba
+                        buscando a nosotros.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 FOTO 1
+            ================================================== -->
+
+            <div class="photo reveal">
+
+                <img
+                    src="https://raw.githubusercontent.com/aromq90-max/carta/main/1.jpeg"
+                    alt="Nuestro recuerdo"
+                    loading="lazy"
+                >
+
+                <div class="photo-caption">
+                    Y sin saberlo, todo comenzó aquí...
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 CAPÍTULO 2
+            ================================================== -->
+
+            <section class="chapter reveal">
+
+                <div class="side-note left" data-note>
+                    Ese día el tiempo se detuvo.
+                </div>
+
+                <div class="side-note right" data-note>
+                    Solo existíamos tú y yo.
+                </div>
+
+                <div class="chapter-number">
+                    Capítulo II
+                </div>
+
+                <h2>
+                    El parque de San Miguel y la luz en la oscuridad
+                </h2>
+
+                <p>
+                    El 3 de mayo nos volvimos a encontrar con ganas
+                    de seguir conociéndonos.
+                </p>
+
+                <p>
+                    Recuerdo estar sentados bajo aquel árbol en el
+                    parque de San Miguel... en ese instante el tiempo
+                    se detuvo; solo existíamos tú y yo, y nada más
+                    importaba.
+                </p>
+
+                <p>
+                    Antes de ti, mi vida caminaba entre sombras,
+                    pero ese día sentí cómo la iluminabas por completo
+                    con tu sola presencia.
+                </p>
+
+                <p>
+                    Supe en lo más profundo de mi ser que eras la
+                    mujer ideal para mí.
+                </p>
+
+                <p>
+                    Quizás fui impulsivo, pero no pude contener lo
+                    que nacía en mi pecho y te propuse que fueras
+                    mi novia.
+                </p>
+
+                <p>
+                    Aunque al principio dijiste que no, nuestro
+                    primer beso lo cambió todo.
+                </p>
+
+                <p>
+                    Fue el detonante de una llama y de unos
+                    sentimientos que hoy siguen creciendo con más
+                    fuerza que nunca.
+                </p>
+
+            </section>
+
+
+            <!-- FOTO 2 -->
+
+            <div class="photo reveal">
+
+                <img
+                    src="https://raw.githubusercontent.com/aromq90-max/carta/main/9.jpeg"
+                    alt="Un recuerdo contigo"
+                    loading="lazy"
+                >
+
+                <div class="photo-caption">
+                    El comienzo de nosotros.
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 CAPÍTULO 3
+            ================================================== -->
+
+            <section class="chapter reveal">
+
+                <div class="side-note left" data-note>
+                    A veces perder nos enseña cuánto amamos.
+                </div>
+
+                <div class="side-note right" data-note>
+                    Tú eres mi caos perfecto.
+                </div>
+
+                <div class="chapter-number">
+                    Capítulo III
+                </div>
+
+                <h2>
+                    La tormenta, el caos y la promesa de luchar
+                </h2>
+
+                <p>
+                    Al cumplir tres meses juntos, atravesamos
+                    tormentas. Tuvimos altas y bajas, y reconozco
+                    que peleamos más de lo debido.
+                </p>
+
+                <p>
+                    Mi mente caminaba en territorio desconocido;
+                    no sabía lo que era estar al lado de una mujer
+                    tan extraordinaria como tú.
+                </p>
+
+                <p>
+                    Me invadieron las inseguridades y el miedo
+                    desgarrador a fracasar, a no ser el hombre
+                    ideal que merecías.
+                </p>
+
+                <p>
+                    Esos miedos me llevaron a cometer errores y
+                    me terminaste.
+                </p>
+
+                <p>
+                    Durante esa semana separados, intenté avanzar,
+                    pero el vacío me enseñó una verdad innegable:
+                    lo tuyo no era un capricho, no era un juego,
+                    era el amor más puro y real que jamás había
+                    sentido.
+                </p>
+
+                <p>
+                    Fue ahí cuando tomé una de las decisiones más
+                    importantes de mi vida:
+                    <strong>luchar por ti.</strong>
+                </p>
+
+                <p>
+                    Volví a buscarte. Tu boca decía que no, pero
+                    al mirarte a los ojos vi que me amabas con
+                    locura; tu alma me susurraba en silencio:
+                    <strong>“No te vayas”.</strong>
+                </p>
+
+                <p>
+                    Sé que eres una persona compleja, pero entendí
+                    algo hermoso:
+                    <strong>tú eres mi caos perfecto.</strong>
+                </p>
+
+                <p>
+                    Yo no busco una calma monótona; busco tu caos,
+                    porque en él encontré todo lo que deseo y amo
+                    en esta vida.
+                </p>
+
+            </section>
+
+
+            <!-- FOTO 3 -->
+
+            <div class="photo reveal">
+
+                <img
+                    src="https://raw.githubusercontent.com/aromq90-max/carta/main/11.jpeg"
+                    alt="Nuestro camino"
+                    loading="lazy"
+                >
+
+                <div class="photo-caption">
+                    Incluso en las tormentas, te elegiría.
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 CAPÍTULO 4
+            ================================================== -->
+
+            <section class="chapter reveal">
+
+                <div class="side-note left" data-note>
+                    Amar también es aprender.
+                </div>
+
+                <div class="side-note right" data-note>
+                    Quiero ser mejor para nosotros.
+                </div>
+
+                <div class="chapter-number">
+                    Capítulo IV
+                </div>
+
+                <h2>
+                    Aprendizaje y transformación
+                </h2>
+
+                <p>
+                    Después de eso tuvimos una prueba más, pero esa
+                    última discusión se convirtió en el espejo que
+                    me hizo madurar.
+                </p>
+
+                <p>
+                    Me enseñó a cambiar la forma en que actuaba,
+                    a escuchar mejor y a ser una versión superior
+                    de mí mismo para ti.
+                </p>
+
+                <p>
+                    Cada día a tu lado es una lección de amor y
+                    paciencia.
+                </p>
+
+                <p>
+                    A pesar de que a veces tiendo a exigir o a
+                    esperar más, jamás dejo de observar cada
+                    pequeño detalle tuyo.
+                </p>
+
+                <p>
+                    Cada gesto, cada mirada y cada esfuerzo tuyo
+                    me enamoran como el primer día.
+                </p>
+
+                <div class="quote">
+
+                    <p>
+                        No quiero una historia perfecta.
+                        Quiero nuestra historia.
+                    </p>
+
+                </div>
+
+                <p>
+                    Con nuestras risas, nuestras lágrimas,
+                    nuestros aprendizajes y nuestras ganas de
+                    seguir eligiéndonos.
+                </p>
+
+            </section>
+
+
+            <!-- FOTO 4 -->
+
+            <div class="photo reveal">
+
+                <img
+                    src="https://raw.githubusercontent.com/aromq90-max/carta/main/13.jpeg"
+                    alt="Un momento especial"
+                    loading="lazy"
+                >
+
+                <div class="photo-caption">
+                    Cada pequeño momento contigo importa.
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 CAPÍTULO 5
+            ================================================== -->
+
+            <section class="chapter reveal">
+
+                <div class="side-note left" data-note>
+                    Cinco meses de nosotros.
+                </div>
+
+                <div class="side-note right" data-note>
+                    Y todavía quiero descubrirte más.
+                </div>
+
+                <div class="chapter-number">
+                    Capítulo V
+                </div>
+
+                <h2>
+                    Cinco meses de mi verdadera recompensa
+                </h2>
+
+                <p>
+                    Hoy cumplimos 5 meses juntos, los mejores
+                    5 meses de mi existencia.
+                </p>
+
+                <p>
+                    En tan poco tiempo lograste que me enamorara
+                    como nunca pensé que sería posible.
+                </p>
+
+                <p>
+                    Me demostraste que se puede volver a confiar,
+                    que se puede volver a amar con el alma abierta
+                    y que la felicidad no es un sueño lejano.
+                </p>
+
+                <p>
+                    La vida en algún momento me trató mal, pero
+                    hoy siento que me está recompensando contigo.
+                </p>
+
+                <p>
+                    Eres mi niña, mi princesa, el amor de mi vida.
+                </p>
+
+                <p>
+                    Agradezco a la vida por haberte cruzado en mi
+                    camino y por darme el privilegio de llamarte
+                    mía.
+                </p>
+
+            </section>
+
+
+            <!-- FOTO 5 -->
+
+            <div class="photo reveal">
+
+                <img
+                    src="https://raw.githubusercontent.com/aromq90-max/carta/main/14.jpeg"
+                    alt="Cinco meses juntos"
+                    loading="lazy"
+                >
+
+                <div class="photo-caption">
+                    Mi lugar favorito siempre será contigo.
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 FRASE
+            ================================================== -->
+
+            <div class="quote reveal">
+
+                <p>
+                    Mi verdadera recompensa no son estos cinco meses.
+                    Eres tú.
+                </p>
+
+            </div>
+
+
+            <!-- =================================================
+                 CARTA PARA KARINA
+            ================================================== -->
+
+            <section class="letter reveal">
+
+                <div class="letter-title">
+                    Para ti, Karina...
+                </div>
+
+                <p>
+                    Mi niña...
+                </p>
+
+                <p>
+                    Si alguna vez me preguntaran qué cambió en mi
+                    vida desde que llegaste, probablemente no
+                    encontraría una sola respuesta.
+                </p>
+
+                <p>
+                    Cambiaste mis días, mis pensamientos, mis
+                    emociones y hasta mi forma de entender el amor.
+                </p>
+
+                <p>
+                    Llegaste a iluminar lugares de mí que yo creía
+                    que permanecerían oscuros.
+                </p>
+
+                <p>
+                    Y aunque nuestra historia no ha sido perfecta,
+                    cada momento me ha enseñado algo.
+                </p>
+
+                <p>
+                    Me has enseñado que amar también significa
+                    aprender, crecer, escuchar y querer convertirse
+                    cada día en una mejor persona.
+                </p>
+
+                <p>
+                    No sé qué nos tenga preparado el futuro.
+                    Pero sé algo:
+                    quiero seguir escribiéndolo contigo.
+                </p>
+
+                <p>
+                    Quiero seguir conociendo cada parte de ti,
+                    incluso esas partes que todavía no conozco.
+                </p>
+
+                <p>
+                    Quiero seguir riéndome contigo, abrazándote,
+                    besándote, aprendiendo de nuestros errores y
+                    celebrando cada pequeño logro.
+                </p>
+
+                <p>
+                    Porque después de todo lo que hemos vivido,
+                    sigo sintiendo lo mismo:
+                    <strong>te elegiría a ti.</strong>
+                </p>
+
+                <p>
+                    Te amo más de lo que las palabras pueden decir,
+                    más de lo que puedas imaginar.
+                </p>
+
+                <p>
+                    Y quiero que nunca olvides que eres una de las
+                    cosas más bonitas que la vida me ha permitido
+                    encontrar.
+                </p>
+
+                <div class="signature">
+                    Con todo mi amor,<br>
+                    siempre yo. ❤️
+                </div>
+
+            </section>
+
+
+        </div>
+
+
+        <!-- =====================================================
+             FINAL
+        ====================================================== -->
+
+        <section class="final">
+
+            <div class="final-content reveal">
+
+                <div class="final-heart">
+                    ♥
+                </div>
+
+                <h2>
+                    Volvería a elegirte.
+                </h2>
+
+                <p>
+                    Si pudiera volver al principio,
+                    volvería a buscarte entre toda la gente.
+                </p>
+
+                <p>
+                    Volvería a bailar contigo.
+                    Volvería a hablar contigo.
+                    Volvería a sentarme bajo aquel árbol.
+                    Volvería a besarte.
+                </p>
+
+                <p>
+                    Y volvería a elegirte.
+                </p>
+
+                <div class="forever">
+                    Tú y yo... siempre. ♡
+                </div>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+    <!-- =========================================================
+         CONTROL DE MÚSICA
+    ========================================================== -->
+
+    <button
+        id="musicControl"
+        aria-label="Pausar música"
+        title="Música"
+    >
+        ♪
+    </button>
+
+
+    <!-- =========================================================
+         JAVASCRIPT
+    ========================================================== -->
+
+    <script>
+
+        /* =========================================================
+           ELEMENTOS
+        ========================================================= */
+
+        const heartButton =
+            document.getElementById("heartButton");
+
+        const heartScreen =
+            document.getElementById("heartScreen");
+
+        const diary =
+            document.getElementById("diary");
+
+        const transitionFlash =
+            document.getElementById("transitionFlash");
+
+        const heartCounter =
+            document.getElementById("heartCounter");
+
+        const heartText =
+            document.getElementById("heartText");
+
+        const heartInstruction =
+            document.getElementById("heartInstruction");
+
+        const music =
+            document.getElementById("loveMusic");
+
+        const musicControl =
+            document.getElementById("musicControl");
+
+
+        /* =========================================================
+           VARIABLES
+        ========================================================== */
+
+        let clicks = 0;
+
+        let musicStarted = false;
+
+
+        /* =========================================================
+           CORAZONES FLOTANTES
+        ========================================================== */
+
+        function createFloatingHeart() {
+
+            const heart =
+                document.createElement("div");
+
+            heart.className =
+                "floating-heart";
+
+            heart.innerHTML = "♥";
+
+            heart.style.left =
+                Math.random() * 100 + "%";
+
+            heart.style.bottom =
+                "-30px";
+
+            heart.style.fontSize =
+                (10 + Math.random() * 18) + "px";
+
+            heart.style.animationDuration =
+                (5 + Math.random() * 6) + "s";
+
+            heartScreen.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 12000);
+        }
+
+
+        setInterval(
+            createFloatingHeart,
+            900
+        );
+
+
+        /* =========================================================
+           TOQUE DEL CORAZÓN
+        ========================================================== */
+
+        function heartClick() {
+
+            if (clicks >= 4) {
+                return;
+            }
+
+            clicks++;
+
+            heartButton.dataset.progress =
+                clicks;
+
+            heartCounter.textContent =
+                clicks;
+
+
+            /* Animación de latido */
+
+            heartButton.classList.remove("beat");
+
+            void heartButton.offsetWidth;
+
+            heartButton.classList.add("beat");
+
+
+            /* Punto */
+
+            const dot =
+                document.getElementById(
+                    "dot" + clicks
+                );
+
+            if (dot) {
+                dot.classList.add("active");
+            }
+
+
+            /* Textos */
+
+            if (clicks === 1) {
+
+                heartText.textContent =
+                    "Nuestro comienzo";
+
+                heartInstruction.textContent =
+                    "Un encuentro inesperado...";
+
+            }
+
+            else if (clicks === 2) {
+
+                heartText.textContent =
+                    "El primer beso";
+
+                heartInstruction.textContent =
+                    "Y comenzó nuestra historia...";
+
+            }
+
+            else if (clicks === 3) {
+
+                heartText.textContent =
+                    "Elegirnos";
+
+                heartInstruction.textContent =
+                    "Incluso después de las tormentas...";
+
+            }
+
+            else if (clicks === 4) {
+
+                heartText.textContent =
+                    "Tú y yo";
+
+                heartInstruction.textContent =
+                    "Nuestra historia comienza aquí ❤️";
+
+                startMusic();
+
+                setTimeout(
+                    openDiary,
+                    1200
+                );
+            }
+        }
+
+
+        /* =========================================================
+           EVENTOS TOUCH / CLICK
+        ========================================================== */
+
+        heartButton.addEventListener(
+            "click",
+            heartClick
+        );
+
+
+        /* =========================================================
+           MÚSICA
+        ========================================================== */
+
+        function startMusic() {
+
+            if (musicStarted) {
+                return;
+            }
+
+            musicStarted = true;
+
+            /*
+             * Volumen bajo para que sea música de fondo.
+             */
+
+            music.volume = 0.18;
+
+            music.currentTime = 0;
+
+            const playPromise =
+                music.play();
+
+            if (playPromise !== undefined) {
+
+                playPromise
+                    .then(() => {
+
+                        musicControl.classList.add(
+                            "visible"
+                        );
+
+                    })
+                    .catch(error => {
+
+                        console.log(
+                            "No se pudo iniciar la música:",
+                            error
+                        );
+
+                        musicStarted = false;
+
+                    });
+            }
+        }
+
+
+        /* =========================================================
+           CONTROL DE MÚSICA
+        ========================================================== */
+
+        musicControl.addEventListener(
+            "click",
+            () => {
+
+                if (music.paused) {
+
+                    music.play();
+
+                    musicControl.textContent =
+                        "♪";
+
+                    musicControl.setAttribute(
+                        "aria-label",
+                        "Pausar música"
+                    );
+
+                } else {
+
+                    music.pause();
+
+                    musicControl.textContent =
+                        "Ⅱ";
+
+                    musicControl.setAttribute(
+                        "aria-label",
+                        "Reproducir música"
+                    );
+                }
+
+            }
+        );
+
+
+        /* =========================================================
+           ABRIR DIARIO
+        ========================================================== */
+
+        function openDiary() {
+
+            transitionFlash.classList.add(
+                "active"
+            );
+
+            setTimeout(() => {
+
+                heartScreen.classList.add(
+                    "hidden"
+                );
+
+            }, 600);
+
+
+            setTimeout(() => {
+
+                diary.classList.add(
+                    "visible"
+                );
+
+                transitionFlash.classList.remove(
+                    "active"
+                );
+
+                document.body.style.background =
+                    "#fff9f5";
+
+                window.scrollTo(
+                    0,
+                    0
+                );
+
+            }, 1100);
+
+        }
+
+
+        /* =========================================================
+           SCROLL REVEAL
+        ========================================================== */
+
+        const revealElements =
+            document.querySelectorAll(
+                ".reveal"
+            );
+
+
+        const observer =
+            new IntersectionObserver(
+                entries => {
+
+                    entries.forEach(entry => {
+
+                        if (
+                            entry.isIntersecting
+                        ) {
+
+                            entry.target.classList.add(
+                                "visible"
+                            );
+
+                            observer.unobserve(
+                                entry.target
+                            );
+                        }
+
+                    });
+
+                },
+                {
+                    threshold: 0.12
+                }
+            );
+
+
+        revealElements.forEach(
+            element => {
+
+                observer.observe(
+                    element
+                );
+
+            }
+        );
+
+
+        /* =========================================================
+           NOTAS LATERALES
+        ========================================================== */
+
+        const sideNotes =
+            document.querySelectorAll(
+                "[data-note]"
+            );
+
+
+        const noteObserver =
+            new IntersectionObserver(
+                entries => {
+
+                    entries.forEach(entry => {
+
+                        if (
+                            entry.isIntersecting
+                        ) {
+
+                            entry.target.classList.add(
+                                "show"
+                            );
+
+                            noteObserver.unobserve(
+                                entry.target
+                            );
+
+                        }
+
+                    });
+
+                },
+                {
+                    threshold: 0.5
+                }
+            );
+
+
+        sideNotes.forEach(
+            note => {
+
+                noteObserver.observe(
+                    note
+                );
+
+            }
+        );
+
+
+        /* =========================================================
+           CORAZONES AL HACER SCROLL
+        ========================================================== */
+
+        let lastScroll =
+            window.scrollY;
+
+        let scrollCooldown =
+            false;
+
+
+        window.addEventListener(
+            "scroll",
+            () => {
+
+                const currentScroll =
+                    window.scrollY;
+
+                if (
+                    Math.abs(
+                        currentScroll -
+                        lastScroll
+                    ) > 100 &&
+                    !scrollCooldown
+                ) {
+
+                    createScrollHeart();
+
+                    scrollCooldown = true;
+
+                    setTimeout(
+                        () => {
+                            scrollCooldown = false;
+                        },
+                        900
+                    );
+
+                    lastScroll =
+                        currentScroll;
+                }
+
+            },
+            {
+                passive: true
+            }
+        );
+
+
+        function createScrollHeart() {
+
+            const heart =
+                document.createElement(
+                    "div"
+                );
+
+            heart.className =
+                "scroll-heart";
+
+            heart.textContent =
+                Math.random() > .5
+                    ? "♡"
+                    : "♥";
+
+            heart.style.left =
+                (15 +
+                Math.random() * 70) +
+                "vw";
+
+            heart.style.top =
+                (45 +
+                Math.random() * 35) +
+                "vh";
+
+            document.body.appendChild(
+                heart
+            );
+
+            setTimeout(
+                () => {
+                    heart.remove();
+                },
+                1600
+            );
+        }
+
+
+        /* =========================================================
+           EVITAR ZOOM ACCIDENTAL EN DOBLE TOQUE
+        ========================================================== */
+
+        let lastTouchEnd = 0;
+
+        document.addEventListener(
+            "touchend",
+            event => {
+
+                const now =
+                    Date.now();
+
+                if (
+                    now - lastTouchEnd <= 300
+                ) {
+
+                    event.preventDefault();
+
+                }
+
+                lastTouchEnd = now;
+
+            },
+            {
+                passive: false
+            }
+        );
+
+
+        /* =========================================================
+           INICIALIZACIÓN
+        ========================================================== */
+
+        window.addEventListener(
+            "load",
+            () => {
+
+                /*
+                 * No iniciamos la música aquí.
+                 *
+                 * El navegador móvil podría bloquearla.
+                 *
+                 * Se inicia únicamente después del
+                 * cuarto toque del corazón.
+                 */
+
+                console.log(
+                    "Nuestra historia está lista ❤️"
+                );
+
+            }
+        );
+
+    </script>
+
+</body>
+</html>
